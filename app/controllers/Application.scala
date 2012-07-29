@@ -14,27 +14,29 @@ object Application extends Controller {
     Ok("Got request [" + request + "]")
   }
 
-  def getTitleFromId(id: Long): Promise[String] = {
+  def articleFromId(id: Long) = {
     val url = "http://en.wikipedia.org/w/api.php?format=xml&action=query&pageids=" + id
-    WS.url(url).get().map { response =>
-      (response.xml \\ "page" \ "@title").toString
+      val promiseOfTitle = WS.url(url).get().map { response =>
+        (response.xml \\ "page" \ "@title").toString
+      }
+    articleFromTitle(promiseOfTitle)
+  }
+
+  def articleFromTitle(title: Any) = Action {
+    //TODO : correctly handle title formating
+    val res = title match {
+      case title: String =>  WS.url("http://en.m.wikipedia.org/wiki/" + title).get()
+      case promise: Promise[String] => promise.flatMap(title => WS.url("http://en.m.wikipedia.org/wiki/" + title).get())
+      // How to remove this warning ?
     }
-  }
-
-  def getWikiHtmlPage(title: Promise[String]) = {
-    //val url = "http://en.wikipedia.org/wiki/Kouign_amann"
-    val url = "http://en.m.wikipedia.org/wiki/Kouign-amann"
-    WS.url(url).get()
-  }
-
-  def article(id: Long) = Action {
-    val promiseOfTitle = getTitleFromId(id)
-    val promiseOfHtml = getWikiHtmlPage(promiseOfTitle)
     Async {
-      promiseOfHtml.map(n => SimpleResult(
+     
+      res.map { n => SimpleResult(
         header = ResponseHeader(200, Map(CONTENT_TYPE -> "text/html")),
-        body = Enumerator(n.body)))
+        body = Enumerator(n.body))
+        }
     }
+
   }
 
 }
