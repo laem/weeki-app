@@ -9,10 +9,17 @@ object ApplicationBuild extends Build {
 
     val appDependencies = Seq(
       // Add your project dependencies here,
+      "com.twitter" % "finagle-core" % "5.3.0",
+      "com.twitter" % "finagle-http" % "5.3.0",
+      //"com.twitter" % "finagle-stream" % "5.3.0",
+      "com.codahale" % "jerkson_2.9.1" % "0.5.0",
+      "com.twitter" % "joauth" % "1.9.3"
     )
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
       // Add your own project settings here      
+      resolvers += "twitter.com" at "http://maven.twttr.com/",
+      resolvers += "repo.codahale.com" at "http://repo.codahale.com"
     )
 
 }

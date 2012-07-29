@@ -22,7 +22,8 @@ object Application extends Controller {
   }
 
   def getWikiHtmlPage(title: Promise[String]) = {
-    val url = "http://en.wikipedia.org/wiki/Kouign_amann"
+    //val url = "http://en.wikipedia.org/wiki/Kouign_amann"
+    val url = "http://en.m.wikipedia.org/wiki/Kouign-amann"
     WS.url(url).get()
   }
 
