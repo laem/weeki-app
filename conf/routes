@@ -9,5 +9,8 @@ GET     /                           controllers.Application.index
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 # Wikipedia articles. We love Kouign Amann
-GET   /wiki/id/:id          controllers.Application.articleFromId(id: Long)  
-GET   /wiki/:title       controllers.Application.articleFromTitle(title: String)  
+GET   /wiki/id/:id          		controllers.Application.articleFromId(id: Long)  
+GET   /wiki/:title       			controllers.Application.articleFromTitle(title: String)  
+
+# WebSocket test 
+GET   /ws       					controllers.Application.ws 

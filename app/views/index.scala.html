@@ -2,6 +2,22 @@
 
 @main("Welcome to Play 2.0") {
     
-    @play20.welcome(message)
+    <h2>WebSockets test</h2>
     
+    <script type="text/javascript" charset="utf-8">
+    
+        $(function() {
+            
+			var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+            var socket = new WS("ws://localhost:9000/ws")
+            
+			socket.onopen = function(){  
+			    alert("Socket has been opened!");  
+			}
+		    socket.onmessage = function(tweet){  
+		        alert(tweet.data); //Awesome!  
+		    }  
+        })
+    
+    </script>
 }
