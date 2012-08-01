@@ -1,23 +1,26 @@
-@(message: String)
+@(message: String) @main("Welcome to Play 2.0")(Html("")){
 
-@main("Welcome to Play 2.0") {
-    
-    <h2>WebSockets test</h2>
-    
-    <script type="text/javascript" charset="utf-8">
-    
-        $(function() {
-            
-			var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
-            var socket = new WS("ws://localhost:9000/ws")
-            
-			socket.onopen = function(){  
-			    alert("Socket has been opened!");  
-			}
-		    socket.onmessage = function(tweet){  
-		        alert(tweet.data); //Awesome!  
-		    }  
-        })
-    
-    </script>
+<h2>WebSockets test</h2>
+<div id="socket-state">Nothing happening</div>
+<div id="tweets">Tweets will be displayed here</div>
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		$("div#socket-state").text("Initializing socket")
+		$("div#tweets").text("Wait 10 seconds :) ")
+
+		var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+		var socket = new WS("ws://localhost:9000/ws")
+
+		socket.onopen = function() {
+			$("div#socket-state").text("Socket opened !")
+		}
+	
+		socket.onmessage = function(tweets) {
+			var ts = jQuery.parseJSON(tweets.data)
+			console.log(ts)
+			$("div#tweets").text(JSON.stringify(ts)); //Awesome!  
+		}
+	})
+</script>
 }

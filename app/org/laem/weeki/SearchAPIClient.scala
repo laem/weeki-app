@@ -21,8 +21,8 @@ import org.codehaus.jackson.map.JsonMappingException
  * are closed.
  */
 
-  case class Tweet(id: Long, text: String)
-  case class JsonResponse(results: Seq[Tweet])
+//case class Tweet(id_str: String, created_at: String, from_user: String, text: String)
+//case class JsonResponse(results: Seq[Tweet])
 
 object SearchAPIClient {
   class InvalidRequest extends Exception
@@ -46,13 +46,13 @@ object SearchAPIClient {
   //Enclose multi word strings in ""
   def enclose(in: String): String = if (in.contains(' ')) "\"" + in + "\"" else in
 
-  def go(keywords: List[String]) {
+  def go(keywords: List[String]) = {
 
     val clientWithoutErrorHandling: Service[HttpRequest, HttpResponse] = ClientBuilder()
       .codec(Http())
       .hosts(new InetSocketAddress("search.twitter.com", 80))
       .hostConnectionLimit(0)
-      .connectionTimeout(1.second)
+      .tcpConnectTimeout(1.second)
       .build()
 
     val handleErrors = new HandleErrors
@@ -64,14 +64,28 @@ object SearchAPIClient {
 
     val path = "/search.json?q=" + URLEncoder.encode(keywords.tail.foldLeft(enclose(keywords.head))((k, i) => k + " OR " + enclose(i)), "UTF-8")
 
-    
-    val request1 = makeRequest(client, path)
-    //val request2 = makeRequest(client)
+
+    val request = makeRequest(client, path)
 
     // When both request1 and request2 have completed, close the TCP connection(s).
-    (request1) ensure {
-      client.release()
-    }
+    (request) onSuccess { response =>
+      val responseString = response.getContent.toString(CharsetUtil.UTF_8)
+      println("))) Received result: " + responseString)
+      //Parse response for Json objects
+      var twts: List[Tweet] = Nil
+
+      try {
+        val tweets = parse[JsonResponse](responseString).results
+        println(tweets)
+        twts = tweets.take(5).toList
+        println("twts "+twts)
+        //TODO: flip pages
+
+      } catch {
+        case e: ParsingException => println("Parse error")
+      }
+
+    } 
   }
 
   private[this] def makeRequest(client: Service[HttpRequest, HttpResponse], path: String) = {
@@ -80,17 +94,7 @@ object SearchAPIClient {
 
     //println(request)
     client(request) onSuccess { response =>
-      val responseString = response.getContent.toString(CharsetUtil.UTF_8)
-      //println("))) Received result: " + responseString)
-      //Parse response for Json objects
-      try {
-        val tweets = parse[JsonResponse](responseString).results
-        tweets.map(t => println(t))
-        //TODO: flip pages
 
-      } catch {
-        case e: ParsingException => println("Parse error")
-      }
     } onFailure { error =>
       println("))) Request Error: " + error.getClass.getName)
     }
