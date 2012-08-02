@@ -11,14 +11,24 @@ import play.api.libs.iteratee.Iteratee
 import play.api.libs.json.JsValue
 import com.codahale.jerkson.Json._
 import play.api.libs.json.Json
-import scala.xml.NodeSeq
-import scala.xml.Elem
+import scala.xml.{NodeSeq, Elem, XML}
 import play.api.templates.Html
-import scala.xml.XML
 import play.api.Play.current
 import akka.util.duration
 import org.laem.weeki.{SearchAPIClient, Tweet}
 import org.laem.weeki.searchTheFlock
+import scala.xml.factory.XMLLoader
+import org.ccil.cowan.tagsoup.jaxp.SAXFactoryImpl
+
+object TagSoupXmlLoader {
+ 
+    private val factory = new SAXFactoryImpl()
+ 
+ 
+    def get(): XMLLoader[Elem] = {
+        XML.withSAXParser(factory.newSAXParser())
+    }
+}
 
 object Application extends Controller {
 
@@ -42,14 +52,18 @@ object Application extends Controller {
     }
     Async { //Problem : Wikipedia's HTML is not valid XML, parser crashes...
       pageSplit(res).map { tuple =>
+        println(tuple._1.toString)
         Ok(views.html.main("Title to retrieve")(Html(tuple._1.toString))(Html(tuple._2.toString)))
       }
     }
   }
 
   def pageSplit(p: Promise[Response]): Promise[(NodeSeq, NodeSeq)] = { // Returns the head and body of an HTML page
+    val loader = TagSoupXmlLoader.get
+    
     p.map { response =>
-      (\*(scala.xml.XML.loadString(response.body.dropWhile(c => c != '\n').drop(1)) \ "html" \ "head"), \*(response.xml \ "html" \ "body"))
+      val page = loader.loadString(response.body)
+      (\*(page \ "head"), \*(page \ "body"))
     }
   }
 
