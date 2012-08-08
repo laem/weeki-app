@@ -19,8 +19,7 @@ object searchTheFlock {
     response.map { response =>
       try {
         val tweets = parse[JsonResponse](response.json.toString).results
-        println(tweets.head)
-        var twts: List[Tweet]= tweets.take(5).toList
+        var twts: List[Tweet]= tweets.take(4).toList
         //TODO: flip pages
         twts
         
