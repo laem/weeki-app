@@ -1,8 +1,6 @@
 package org.laem.weeki
 
 
-case class Tweet(id_str: String, created_at: String, from_user: String, text: String)
-case class JsonResponse(results: Seq[Tweet])
 
 object BirdiesCall{
 

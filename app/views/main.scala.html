@@ -8,8 +8,10 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("jquery.splitlines")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.splitlines.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/jquery.pop.js")" type="text/javascript"></script>
 		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/tweets.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/pop.css")">
 
     	@head
     	<script type="text/javascript" charset="utf-8">
@@ -18,8 +20,9 @@
 				$("div#tweets").text("Wait 10 seconds :) ")
 		
 				var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+				
 				var socket = new WS("ws://localhost:9000/ws")
-		
+				
 				socket.onopen = function() {
 					$("div#socket-state").text("Socket opened !")
 					$("table.infobox").next("p").after('<div class="recent-tweets"><ul class="tweets"></ul></div><br/>');
@@ -29,21 +32,37 @@
 				}
 		
 				socket.onmessage = function(tweets) {
+					
 					var ts = jQuery.parseJSON(tweets.data)
 					console.log(ts)
 					var tweetList = "";
 					$.each(ts, function(index, value){
-						var li = '<li><p>'+value.text+'</p>'+
-						'<div class="info"><a title="'+value.from_user+'" class="user" '+
-						'href="http://twitter.com/">'+value.from_user+'</a>'+
+						var li = '<li><p>'+value.t.text+'</p>'+
+						'<div class="info"><a title="'+value.t.from_user+'" class="user" '+
+						'href="http://twitter.com/">'+value.t.from_user+'</a>'+
 						'<span title="Retweet Count" class="retweet">19</span>'+
 						'<a	title="Shared 3 days ago" target="_blank" class="date" '+
-						'href="http://twitter.com/Tutorialzine/status/'+value.id_str+'">3 days ago</a>'+
+						'href="http://twitter.com/Tutorialzine/status/'+value.t.id_str+'">3 days ago</a>'+
 						'</div></li>';
 						tweetList+=li;
 					})
+
 					$(".tweets").fadeOut('slow').html(tweetList).fadeIn('slow');
+					
+					var countOfLinks = 0;
+					$.each(ts, function(index, ant){
+						$.each(ant.concepts, function (index, concept){
+							$('a[title="'+concept+'"]').after("<div class='pop'><p>"+ant.t.text+"</p></div>")
+						})
+						$.each(ant.t.entities.urls, function (index, url){
+							countOfLinks+=1;
+						})
+					})
+					
+					//$("h1#firstHeading").append("<div class='pop'><p>you can put anything you want in here!</p></div>")
+					$.pop();
 				}
+					
 			})
 		</script>
         

@@ -12,5 +12,8 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET   /wiki/id/:id          		controllers.Application.articleFromId(id: Long)  
 GET   /wiki/:title       			controllers.Application.articleFromTitle(title: String)  
 
-# WebSocket test 
+# Main WebSocket 
 GET   /ws       					controllers.Application.ws 
+
+# Pure Annotation WebSocket 
+GET   /annotatews   				controllers.Application.annotatews

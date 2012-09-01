@@ -1,7 +1,41 @@
-@(message: String)
+@(message: String) @main("Welcome to Play 2.0"){
 
-@main("Welcome to Play 2.0") {
-    
-    @play20.welcome(message)
-    
+<script src="@routes.Assets.at("jquery.splitlines.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("tweetlinesplit.js")" type="text/javascript"></script>
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/tweets.css")">
+
+}{
+
+<h2>WebSockets test</h2>
+<div id="socket-state">Nothing happening</div>
+
+<p> What people are saying right now </p>
+<ul class="tweets">
+
+	<!-- Tweets will be displayed here .. -->
+
+</ul>
+
+
+<script type="text/javascript" charset="utf-8">
+	$(function() {
+		$("div#socket-state").text("Initializing socket")
+		$("div#tweets").text("Wait a bit :) ")
+
+		var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+		
+		var socket = new WS("ws://localhost:9000/annotatews")
+		
+		socket.onopen = function() {
+			var text = "Rock en Seine is a damn good festival in Paris";
+			socket.send('{"text":"'+text+'"}')
+		}
+
+		socket.onmessage = function(concepts) {
+			console.log(concepts);
+			alert("Received a message from annotatews"+concepts.data);
+		}
+	})
+</script>
+
 }

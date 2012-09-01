@@ -1,6 +1,8 @@
 <classpath>
   <classpathentry output=".target" path="app" kind="src"></classpathentry>
   <classpathentry output=".target" path="test" kind="src"></classpathentry>
+  <classpathentry path="./lib/langdetect.jar" kind="lib"></classpathentry>
+  <classpathentry path="./lib/jsonic-1.2.11.jar" kind="lib"></classpathentry>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/play/play_2.9.1/2.0.2/jars/play_2.9.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/play/templates_2.9.1/2.0.2/jars/templates_2.9.1.jar" kind="lib"></classpathentry>
@@ -9,14 +11,12 @@
   <classpathentry path="/home/laem/Documents/p/web/play-2/repository/local/com.github.jsuereth.scala-arm/scala-arm_2.9.1/1.1/jars/scala-arm_2.9.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.typesafe.akka/akka-actor/2.0.2/jars/akka-actor.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/play/anorm_2.9.1/2.0.2/jars/anorm_2.9.1.jar" kind="lib"></classpathentry>
-  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/io.netty/netty/3.3.0.Final/bundles/netty.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.slf4j/slf4j-api/1.6.4/jars/slf4j-api.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.slf4j/jul-to-slf4j/1.6.4/jars/jul-to-slf4j.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.slf4j/jcl-over-slf4j/1.6.4/jars/jcl-over-slf4j.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/ch.qos.logback/logback-core/1.0.0/jars/logback-core.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/ch.qos.logback/logback-classic/1.0.0/jars/logback-classic.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.typesafe.akka/akka-slf4j/2.0.2/jars/akka-slf4j.jar" kind="lib"></classpathentry>
-  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.google.guava/guava/10.0.1/jars/guava.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.google.code.findbugs/jsr305/1.3.9/jars/jsr305.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.avaje/ebean/2.7.3/jars/ebean.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.hibernate.javax.persistence/hibernate-jpa-2.0-api/1.0.1.Final/jars/hibernate-jpa-2.0-api.jar" kind="lib"></classpathentry>
@@ -35,7 +35,6 @@
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-lang/commons-lang/2.6/jars/commons-lang.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.ning/async-http-client/1.7.0/jars/async-http-client.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/oauth.signpost/signpost-core/1.2.1.1/jars/signpost-core.jar" kind="lib"></classpathentry>
-  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-codec/commons-codec/1.3/jars/commons-codec.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/com.codahale/jerkson_2.9.1/0.5.0/jars/jerkson_2.9.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.codehaus.jackson/jackson-core-asl/1.9.7/jars/jackson-core-asl.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.codehaus.jackson/jackson-mapper-asl/1.9.7/jars/jackson-mapper-asl.jar" kind="lib"></classpathentry>
@@ -45,6 +44,20 @@
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/tyrex/tyrex/1.0.1/jars/tyrex.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/jaxen/jaxen/1.1.3/jars/jaxen.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/net.sf.ehcache/ehcache-core/2.5.0/jars/ehcache-core.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/finagle-core/jars/finagle-core-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/io.netty/netty/bundles/netty-3.4.1.Final.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-collection/jars/util-collection-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.google.guava/guava/jars/guava-11.0.2.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-collections/commons-collections/3.2.1/jars/commons-collections.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-core/jars/util-core-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-hashing/jars/util-hashing-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-jvm/jars/util-jvm-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/finagle-http/jars/finagle-http-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-codec/jars/util-codec-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/commons-codec/commons-codec/jars/commons-codec-1.5.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/util-logging/jars/util-logging-5.3.0.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/com.twitter/joauth/jars/joauth-1.9.3.jar" kind="lib"></classpathentry>
+  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/cache/org.ccil.cowan.tagsoup/tagsoup/jars/tagsoup-1.2.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/play/play-test_2.9.1/2.0.2/jars/play-test_2.9.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.specs2/specs2_2.9.1/1.9/jars/specs2_2.9.1.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.specs2/specs2-scalaz-core_2.9.1/6.0.1/jars/specs2-scalaz-core_2.9.1.jar" kind="lib"></classpathentry>
@@ -62,7 +75,6 @@
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.apache.httpcomponents/httpclient/4.1.2/jars/httpclient.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.apache.httpcomponents/httpcore/4.1.3/jars/httpcore.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-logging/commons-logging/1.1.1/jars/commons-logging.jar" kind="lib"></classpathentry>
-  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-codec/commons-codec/1.4/jars/commons-codec.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.apache.commons/commons-exec/1.1/jars/commons-exec.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/net.java.dev.jna/jna/3.4.0/jars/jna.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/net.java.dev.jna/platform/3.4.0/jars/platform.jar" kind="lib"></classpathentry>
@@ -72,7 +84,6 @@
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/xalan/xalan/2.7.1/jars/xalan.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/xalan/serializer/2.7.1/jars/serializer.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/xml-apis/xml-apis/1.3.04/jars/xml-apis.jar" kind="lib"></classpathentry>
-  <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/commons-collections/commons-collections/3.2.1/jars/commons-collections.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/org.apache.httpcomponents/httpmime/4.1.2/jars/httpmime.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/net.sourceforge.htmlunit/htmlunit-core-js/2.9/jars/htmlunit-core-js.jar" kind="lib"></classpathentry>
   <classpathentry path="/home/laem/Documents/p/web/play-2/framework/../repository/local/xerces/xercesImpl/2.9.1/jars/xercesImpl.jar" kind="lib"></classpathentry>
