@@ -1,20 +1,22 @@
-@(message: String) @main("Welcome to Play 2.0"){
+@(hey: String)
 
-<script src="@routes.Assets.at("jquery.splitlines.js")" type="text/javascript"></script>
-<script src="@routes.Assets.at("tweetlinesplit.js")" type="text/javascript"></script>
-<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/tweets.css")">
+<!DOCTYPE html>
 
-}{
-
+<html>
+    <head>
+        <title>Weeki test page</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
+	</head>
+	<body>
 <h2>WebSockets test</h2>
 <div id="socket-state">Nothing happening</div>
 
-<p> What people are saying right now </p>
-<ul class="tweets">
+<p> This is a socket test </p>
 
-	<!-- Tweets will be displayed here .. -->
-
-</ul>
+<input type='textbox' id='editbox' >
+<div id="concepts"></div>
 
 
 <script type="text/javascript" charset="utf-8">
@@ -28,14 +30,23 @@
 		
 		socket.onopen = function() {
 			var text = "Rock en Seine is a damn good festival in Paris";
-			socket.send('{"text":"'+text+'"}')
+			var ts = 0;
+			$('#editbox').keypress(function(event){
+				var code = event.charCode;
+			    if (event.timeStamp - ts > 10000 && (code == 32 || code == 44 || code == 59 || code == 58))  {
+			    	var text = $('#editbox').val();
+			    	socket.send('{"text":"'+text+'"}');
+			    	ts = event.timeStamp;
+			    } 
+				});
 		}
 
 		socket.onmessage = function(concepts) {
 			console.log(concepts);
-			alert("Received a message from annotatews"+concepts.data);
+			$('#concepts').text(concepts.data);
 		}
+		
 	})
 </script>
-
-}
+</body>
+</html>

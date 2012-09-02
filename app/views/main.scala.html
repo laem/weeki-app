@@ -10,15 +10,21 @@
         <script src="@routes.Assets.at("javascripts/jquery-1.7.1.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/jquery.splitlines.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/jquery.pop.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/toastr/toastr.js")" type="text/javascript"></script>
 		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/tweets.css")">
 		<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/pop.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.at("javascripts/toastr/toastr-responsive.css")">
+		<link rel="stylesheet" media="screen" href="@routes.Assets.at("javascripts/toastr/toastr.css")">
 
     	@head
     	<script type="text/javascript" charset="utf-8">
 			$(function() {
+				
 				$("div#socket-state").text("Initializing socket")
-				$("div#tweets").text("Wait 10 seconds :) ")
 		
+				var momentPreviews;
+				var ts;
+
 				var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
 				
 				var socket = new WS("ws://localhost:9000/ws")
@@ -29,12 +35,20 @@
 					var title = $("h1#firstHeading").text()
 					title = '{"title":"'+title+'"}'
 					socket.send(title)
+					toastr.success('First Socket Opened')
 				}
 		
 				socket.onmessage = function(tweets) {
 					
 					var ts = jQuery.parseJSON(tweets.data)
-					console.log(ts)
+					
+					if (tweets.data == null){
+						toastr.error('Something wrong happened, birds not coming');
+					} else {
+						console.log(ts);
+						toastr.success('Birds have landed on the field');
+					}
+
 					var tweetList = "";
 					$.each(ts, function(index, value){
 						var li = '<li><p>'+value.t.text+'</p>'+
@@ -46,8 +60,10 @@
 						'</div></li>';
 						tweetList+=li;
 					})
+					
 
-					$(".tweets").fadeOut('slow').html(tweetList).fadeIn('slow');
+					//Show the tweets
+					//$(".tweets").fadeOut('slow').html(tweetList).fadeIn('slow');
 					
 					var countOfLinks = 0;
 					$.each(ts, function(index, ant){
@@ -59,9 +75,79 @@
 						})
 					})
 					
+					//Retrieve the urls
+					momentPreviews = new Array();
+					$.each(ts, function(index, ant){
+						$.each(ant.previews, function (index, prev){
+							momentPreviews.push(prev);
+						})
+					})
+					
 					//$("h1#firstHeading").append("<div class='pop'><p>you can put anything you want in here!</p></div>")
 					$.pop();
 				}
+				
+				/*
+				//EDITION SOCKET
+				var annotateSocket = new WS("ws://localhost:9000/annotatews")
+				
+				annotateSocket.onopen = function() {
+					
+					var editme = '<span class="editme" style=background-color:orange>Hey !! I m here !</span>';
+					$('#content_wrapper #content p').after(editme);
+					
+					var editbox = '<input type="textbox" class="editbox"><div id="concepts"></div><div id="previews"></div>';
+					$('.editme').dblclick(function () { 
+					      $(this).replaceWith(editbox);
+					      
+					      var ts = 0;
+							$('.editbox').keypress(function(event){
+								var code = event.charCode;
+							    if (event.timeStamp - ts > 10000 && (code == 32 || code == 44 || code == 59 || code == 58))  {
+							    	var text = $('.editbox').val();
+							    	annotateSocket.send('{"text":"'+text+'"}');
+							    	ts = event.timeStamp;
+							    } 
+							});
+				    });
+					
+					
+					
+				}
+
+				annotateSocket.onmessage = function(concepts) {
+					var concs = jQuery.parseJSON(concepts.data);
+					var previewsToDisplay = new Array();
+					$.each(ts, function(i, ant){
+						$.each(ant.concepts, function (j, tc){
+							$.each(concs, function (k, bc){
+								if (tc == bc){
+									$.each(ant.previews, function(l, prev){
+										previewsToDisplay.push(prev)
+									})
+								}
+							})
+						})
+					});
+					
+					$.each(concs, function (index, concept){
+						
+					})
+					
+					var listOfPreviews =  "";
+					$.each(previewsToDisplay, function(i, p){
+						listOfPreviews+= " | " + p;
+					})
+					$('#previews').text(listOfPreviews);
+					
+					console.log(concs);
+					var listOfConcepts = "";
+					$.each(concs, function (index, concept){
+							listOfConcepts+= " | " + concept;
+						})
+					$('#concepts').text(listOfConcepts);
+				}
+				*/
 					
 			})
 		</script>
