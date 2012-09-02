@@ -152,7 +152,9 @@ object Application extends Controller {
     val in = Iteratee.foreach[JsValue] { message =>
       println("Annotating wiki article: " + message.toString)
       title = (message \ "title").asOpt[String]
-      retrieveTweets(title).map(joptn => out.push(joptn.get))
+      	Akka.system.scheduler.schedule( akka.util.Duration(0, "seconds"), akka.util.Duration(20, "seconds")) {
+    	  retrieveTweets(title).map(joptn => out.push(joptn.get))  
+		}	
     }
 
     // Tweets will be sent through this channel
@@ -176,7 +178,7 @@ object Application extends Controller {
         annotateTweets(tweetList, 0.3).map { l =>
           Json.toJson(l.map { t => println(t); Json.parse(generate(t)) })
         }
-      }.flatMap(jsv => Promise.timeout(Option(jsv), akka.util.Duration(20, "seconds")))
+      }.map(jsv => Option(jsv))
     } else Promise.pure(None)
   }
 
