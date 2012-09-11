@@ -30,7 +30,7 @@ object searchTheFlock {
         twts
         
       } catch {
-        case e: ParsingException => println("Parse error in searchTheFlock"+e.getCause)
+        case e: ParsingException => println("Parse error in searchTheFlock "+e.getCause+" "+response.body + "\n" + path)
         Nil
       }
     }

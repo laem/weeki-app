@@ -152,7 +152,7 @@ object Application extends Controller {
     val in = Iteratee.foreach[JsValue] { message =>
       println("Annotating wiki article: " + message.toString)
       title = (message \ "title").asOpt[String]
-      	Akka.system.scheduler.schedule( akka.util.Duration(0, "seconds"), akka.util.Duration(20, "seconds")) {
+      	Akka.system.scheduler.schedule( akka.util.Duration(0, "seconds"), akka.util.Duration(30, "seconds")) {
     	  retrieveTweets(title).map(joptn => out.push(joptn.get))  
 		}	
     }
@@ -173,7 +173,7 @@ object Application extends Controller {
 
   def retrieveTweets(title: Option[String]) = {
     if (title.isDefined) {
-      searchTheFlock.go(List(title.get), 10).flatMap { tweetList =>
+      searchTheFlock.go(List(title.get), 20).flatMap { tweetList =>
         println("Annotation start")
         annotateTweets(tweetList, 0.3).map { l =>
           Json.toJson(l.map { t => println(t); Json.parse(generate(t)) })

@@ -35,20 +35,30 @@
 					var title = $("h1#firstHeading").text()
 					title = '{"title":"'+title+'"}'
 					socket.send(title)
-					toastr.success('First Socket Opened')
+					toastr.info('First Socket Opened')
 				}
 		
+				var firstTweetsLoaded = false;
+				
 				socket.onmessage = function(tweets) {
-					
-					var ts = jQuery.parseJSON(tweets.data)
+
+					ts = jQuery.parseJSON(tweets.data)
 					
 					if (tweets.data == null){
-						toastr.error('Something wrong happened, birds not coming');
+						toastr.error('Something wrong happened, where are the birds ??');
 					} else {
-						console.log(ts);
-						toastr.success('Birds have landed on the field');
+						if (firstTweetsLoaded == false){
+							firstTweetsLoaded = true;
+							semanticUrlSuggestion(ts);
+						}
+						toastr.success('Birds could be heard !');
 					}
-
+					
+					
+					
+					
+					/* Print Tweets as an array
+					
 					var tweetList = "";
 					$.each(ts, function(index, value){
 						var li = '<li><p>'+value.t.text+'</p>'+
@@ -61,9 +71,8 @@
 						tweetList+=li;
 					})
 					
-
-					//Show the tweets
 					//$(".tweets").fadeOut('slow').html(tweetList).fadeIn('slow');
+					*/
 					
 					var countOfLinks = 0;
 					$.each(ts, function(index, ant){
@@ -75,6 +84,8 @@
 						})
 					})
 					
+					/*
+					useless, no ?
 					//Retrieve the urls
 					momentPreviews = new Array();
 					$.each(ts, function(index, ant){
@@ -82,73 +93,71 @@
 							momentPreviews.push(prev);
 						})
 					})
+					*/
 					
-					//$("h1#firstHeading").append("<div class='pop'><p>you can put anything you want in here!</p></div>")
 					$.pop();
 				}
 				
-				/*
-				//EDITION SOCKET
-				var annotateSocket = new WS("ws://localhost:9000/annotatews")
 				
-				annotateSocket.onopen = function() {
+				//EDITION SOCKET
+				function semanticUrlSuggestion(ts){
 					
-					var editme = '<span class="editme" style=background-color:orange>Hey !! I m here !</span>';
-					$('#content_wrapper #content p').after(editme);
+					var annotateSocket = new WS("ws://localhost:9000/annotatews")
 					
-					var editbox = '<input type="textbox" class="editbox"><div id="concepts"></div><div id="previews"></div>';
-					$('.editme').dblclick(function () { 
-					      $(this).replaceWith(editbox);
-					      
-					      var ts = 0;
-							$('.editbox').keypress(function(event){
-								var code = event.charCode;
-							    if (event.timeStamp - ts > 10000 && (code == 32 || code == 44 || code == 59 || code == 58))  {
-							    	var text = $('.editbox').val();
-							    	annotateSocket.send('{"text":"'+text+'"}');
-							    	ts = event.timeStamp;
-							    } 
-							});
-				    });
-					
-					
-					
-				}
-
-				annotateSocket.onmessage = function(concepts) {
-					var concs = jQuery.parseJSON(concepts.data);
-					var previewsToDisplay = new Array();
-					$.each(ts, function(i, ant){
-						$.each(ant.concepts, function (j, tc){
-							$.each(concs, function (k, bc){
-								if (tc == bc){
-									$.each(ant.previews, function(l, prev){
-										previewsToDisplay.push(prev)
-									})
-								}
-							})
-						})
-					});
-					
-					$.each(concs, function (index, concept){
+					annotateSocket.onopen = function() {
 						
-					})
-					
-					var listOfPreviews =  "";
-					$.each(previewsToDisplay, function(i, p){
-						listOfPreviews+= " | " + p;
-					})
-					$('#previews').text(listOfPreviews);
-					
-					console.log(concs);
-					var listOfConcepts = "";
-					$.each(concs, function (index, concept){
-							listOfConcepts+= " | " + concept;
+						toastr.info('Annotation socket open :)');
+	
+						var editme = '<span class="editme" style=background-color:orange>Hey !! I m here !</span>';
+						$('#content_wrapper #content p').after(editme);
+						
+						var editbox = '<input type="textbox" class="editbox"><div id="concepts"></div><div id="previews"></div>';
+						$('.editme').dblclick(function () { 
+						      $(this).replaceWith(editbox);
+						      
+						      var ts = 0;
+								$('.editbox').keypress(function(event){
+									var code = event.charCode;
+								    if (event.timeStamp - ts > 10000 && (code == 32 || code == 44 || code == 59 || code == 58))  {
+								    	var text = $('.editbox').val();
+								    	annotateSocket.send('{"text":"'+text+'"}');
+								    	ts = event.timeStamp;
+								    } 
+								});
+					    });
+					}
+	
+					annotateSocket.onmessage = function(concepts) {
+						toastr.success('Received concepts message');
+						var concs = jQuery.parseJSON(concepts.data);
+						var previewsToDisplay = new Array();
+						$.each(ts, function(i, ant){
+							$.each(ant.concepts, function (j, tc){
+								$.each(concs, function (k, bc){
+									if (tc == bc){
+										$.each(ant.previews, function(l, prev){
+											previewsToDisplay.push(prev)
+										})
+									}
+								})
+							})
+						});
+						
+						var listOfPreviews =  "";
+						$.each(previewsToDisplay, function(i, p){
+							listOfPreviews+= " | " + p.resolved_url;
 						})
-					$('#concepts').text(listOfConcepts);
-				}
-				*/
-					
+						$('#previews').text(listOfPreviews);
+						
+						console.log(concs);
+						var listOfConcepts = "";
+						$.each(concs, function (index, concept){
+								listOfConcepts+= " | " + concept;
+							})
+						$('#concepts').text(listOfConcepts);
+					}
+				}			
+						
 			})
 		</script>
         
